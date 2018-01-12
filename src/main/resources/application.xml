@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>  
 <beans xmlns="http://www.springframework.org/schema/beans"  
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:tx="http://www.springframework.org/schema/tx" 
     xmlns:aop="http://www.springframework.org/schema/aop"  
     xsi:schemaLocation="    
            http://www.springframework.org/schema/beans    
@@ -8,58 +10,61 @@
            http://www.springframework.org/schema/aop    
            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  
            http://www.springframework.org/schema/context    
-           http://www.springframework.org/schema/context/spring-context-3.0.xsd">  
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd">  
        
-     <!-- 引入jdbc配置文件 -->    
-     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
-        <property name="locations">  
-            <list>  
-               <value>classpath:properties/*.properties</value>  
-                <!--要是有多个配置文件，只需在这里继续添加即可 -->  
-            </list>  
-        </property>  
-    </bean>  
-      
-      
+   <!-- 1.配置数据库相关参数properties的属性：${url} -->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+
+  <!-- 2.数据库连接池 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 配置连接池属性 -->
+        <property name="driverClass" value="${jdbc.driver}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <!-- c3p0连接池的私有属性 -->
+        <property name="maxPoolSize" value="30" />
+        <property name="minPoolSize" value="10" />
+        <!-- 关闭连接后不自动commit -->
+        <property name="autoCommitOnClose" value="false" />
+        <!-- 获取连接超时时间 -->
+        <property name="checkoutTimeout" value="10000" />
+        <!-- 当获取连接失败重试次数 -->
+        <property name="acquireRetryAttempts" value="2" />
+    </bean>
   
-    <!-- 配置数据源 -->  
-    <bean id="dataSource"  
-        class="org.springframework.jdbc.datasource.DriverManagerDataSource">  
-        <!-- 不使用properties来配置 -->  
-        <!-- <property name="driverClassName" value="com.mysql.jdbc.Driver" />   
-            <property name="url" value="jdbc:mysql://localhost:3306/learning" />   
-            <property name="username" value="root" />   
-            <property name="password" value="christmas258@" /> -->  
-       <!-- 使用properties来配置 -->  
-        <property name="driverClassName">  
-            <value>${jdbc_driverClassName}</value>  
-        </property>  
-        <property name="url">  
-            <value>${jdbc_url}</value>  
-        </property>  
-        <property name="username">  
-            <value>${jdbc_username}</value>  
-        </property>  
-        <property name="password">  
-            <value>${jdbc_password}</value>  
-        </property>  
-    </bean>  
-  
-    <!-- 自动扫描了所有的XxxxMapper.xml对应的mapper接口文件，这样就不用一个一个手动配置Mpper的映射了，只要Mapper接口类和Mapper映射文件对应起来就可以了。 -->  
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
-        <property name="basePackage"   value="wang.feiga.**.dao" />  
-    </bean>  
-  
-    <!-- 配置Mybatis的文件 ，mapperLocations配置**Mapper.xml文件位置，configLocation配置mybatis-config文件位置-->  
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
-        <property name="dataSource" ref="dataSource" />  
-        <property name="mapperLocations" value="classpath*:wang/feiga/**/dao/mapper/**/*.xml"/>    
-        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />  
-        <!-- <property name="typeAliasesPackage" value="com.tiantian.ckeditor.model"   
-            /> -->  
-    </bean>  
-  
+   <!-- 3.配置SqlSessionFactory对象 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+        <!-- 扫描entity包 使用别名 -->
+        <property name="typeAliasesPackage" value="wang.feiga.**.entity" />
+        <!-- 扫描sql配置文件:mapper需要的xml文件 -->
+        <property name="mapperLocations" value="classpath*:wang/feiga/**/dao/mapper/**/*.xml" />
+    </bean>
+
+    <!-- 4.配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <!-- 给出需要扫描Dao接口包 -->
+        <property name="basePackage" value="wang.feiga.**.dao" />
+    </bean>
+
     <!-- 自动扫描注解的bean -->  
     <context:component-scan base-package="wang.feiga.**.service" />  
   
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- 配置基于注解的声明式事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
 </beans>  
