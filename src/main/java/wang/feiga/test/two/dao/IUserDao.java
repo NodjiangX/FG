@@ -4,6 +4,6 @@ import wang.feiga.test.two.pojo.User;
 
 public interface IUserDao {  
 
-    public User selectUserById(Integer userId);  
+    User selectUserById(Integer userId);
   
 }  

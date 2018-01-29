@@ -18,6 +18,7 @@ public class StudentController {
 	private IStudentService studentservice;
 
 	/**
+	 *
 	 * 根据id查询
 	 * 
 	 * @param request
@@ -26,8 +27,8 @@ public class StudentController {
 	 */
 	@RequestMapping("/stusele")
 	public String Stusele(HttpServletRequest request, Model model) {
-		int id = Integer.parseInt(request.getParameter("id"));
-		Student stu = this.studentservice.selectStudentById(id);
+	//	int id = Integer.parseInt(request.getParameter("id"));
+		Student stu = this.studentservice.selectStudentById(1);
 		model.addAttribute("stu", stu);
 		return "student";
 	}
