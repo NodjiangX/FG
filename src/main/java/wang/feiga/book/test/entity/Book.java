@@ -1,4 +1,5 @@
 package wang.feiga.book.test.entity;
+
 /**
  * 内容概要： 圖書实体
  * 作者：姜 昊
@@ -6,43 +7,42 @@ package wang.feiga.book.test.entity;
  * 完成时间： 2018年1月12日  下午4:49:15
  */
 public class Book {
-	
-	private long bookId;// 图书ID
 
-	private String name;// 图书名称
+    private long bookId;// 图书ID
 
-	private int number;// 馆藏数量
-	
-	
+    private String name;// 图书名称
 
-	public long getBookId() {
-		return bookId;
-	}
+    private int number;// 馆藏数量
 
-	public void setBookId(long bookId) {
-		this.bookId = bookId;
-	}
 
-	public String getName() {
-		return name;
-	}
+    public long getBookId() {
+        return bookId;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setBookId(long bookId) {
+        this.bookId = bookId;
+    }
 
-	public int getNumber() {
-		return number;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setNumber(int number) {
-		this.number = number;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public String toString() {
-		return "Book [bookId=" + bookId + ", name=" + name + ", number="
-				+ number + "]";
-	}
-	
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    @Override
+    public String toString() {
+        return "Book [bookId=" + bookId + ", name=" + name + ", number="
+                + number + "]";
+    }
+
 }
