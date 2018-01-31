@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /** 
- * 功能概要： 
+ * 功能概要： 通用基本导入配置文件抽象类
  *  
  * @author jianghao  
  */  
