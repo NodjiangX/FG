@@ -1,6 +1,7 @@
 package wang.feiga.book.test.service;
 
 import wang.feiga.book.dto.AppointExecution;
+import wang.feiga.book.exception.RepeatAppointException;
 import wang.feiga.book.test.entity.Book;
 
 import java.util.List;

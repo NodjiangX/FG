@@ -15,14 +15,14 @@ import wang.feiga.test.one.service.IStudentService;
  */
 @Service("StudentService")
 public class StudentServiceImpl implements IStudentService {
-	
-	@Autowired
-	private IStudentDao studentdao;
-	
-	@Override
-	public Student selectStudentById(int id) {
-		
-		return this.studentdao.selectByPrimaryKey(id);
-	}
+
+    @Autowired
+    private IStudentDao studentdao;
+
+    @Override
+    public Student selectStudentById(int id) {
+
+        return this.studentdao.selectByPrimaryKey(id);
+    }
 
 }
